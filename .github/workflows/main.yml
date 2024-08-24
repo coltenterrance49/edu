@@ -1,6 +1,6 @@
 name: Cl
 
-on: workflow_dispatch
+on: [push, workflow_dispatch]
 
 jobs:
   build:
@@ -8,10 +8,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Download 1
+    - name: Download
       run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
-    - name: Download 2
-      run: Invoke-WebRequest https://github.com/coltenterrance49/edu/raw/main/.github/workflows/start.bat -OutFile start.bat
     - name: Extract
       run: Expand-Archive ngrok.zip
     - name: Auth
@@ -22,9 +20,6 @@ jobs:
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
     - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
-    - name: Create Tunnel 1
-      run: cmd /c start.bat
-    - name: Create Tunnel 2
+    - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+    - name: Create Tunnel
       run: .\ngrok\ngrok.exe tcp 3389
-        
-    
